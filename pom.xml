@@ -66,6 +66,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-selenide</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

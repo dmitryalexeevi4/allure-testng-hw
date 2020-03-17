@@ -1,66 +1,51 @@
 package com.github.dmitryalexeevi4;
 
-import com.codeborne.selenide.SelenideElement;
-import org.slf4j.*;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.*;
+import org.testng.annotations.*;
+import io.qameta.allure.selenide.AllureSelenide;
 
-import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
+@Epic("idemo.bspb.ru")
+@Owner("Бобылев Дмитрий")
+
 public class TestCase {
-    Logger LOG = LoggerFactory.getLogger(TestCase.class);
     LoginPage loginPage = new LoginPage();
     MainPage mainPage = new MainPage();
     OverviewPage overviewPage = new OverviewPage();
 
-    @Test
-    public void test() {
+    @BeforeClass
+    public void init() {
+        SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(false));
         open("https://idemo.bspb.ru");
+    }
 
-        LOG.info("Заполнение полей Username и Password...");
+    @Feature("Вход в систему")
+    @Story("Проверка входа в систему")
+    @Description("Здесь будет проверка въода в систему")
+    @Test
+    public void loginTest() {
         loginPage
                 .fieldsInsert("demo", "demo")
-                .loginButton("login-button");
+                .authCheck()
+                .codeInsert("0000");
 
-        LOG.info("Проверка на отображение формы двухфакторной авторизации...");
-        $(loginPage.findElementById("login-form").shouldBe(visible));
-        LOG.info("Форма отображена");
+        mainPage.userGreetingCheck();
+    }
 
-        LOG.info("Заполнение поля для кода...");
-        loginPage
-                .codeInsert("0000")
-                .loginButton("login-otp-button");
-
-        LOG.info("Проверка на осуществление входа в систему...");
-        $(mainPage.findElementById("user-greeting").shouldBe(visible));
-        LOG.info("Вход осуществлен");
-
-        LOG.info("Открытие страницы Обзор/Overview...");
+    @Feature("Страница \"Обзор\"")
+    @Story("Действия на странице")
+    @Description("Здесь будут проверки на странице")
+    @Test
+    public void pageTest() {
         mainPage.openNavBarSection("overview");
+        overviewPage.pageLocationCheck();
 
-        LOG.info("Проверка нахождения на странице \"Обзор\"");
-        $(overviewPage.pageHeader().shouldHave(text(overviewPage.firstTitleWord())));
-        LOG.info("Успешно");
-
-        LOG.info("Проверка отображения блока \"Финансовая свобода\"...");
-        $(overviewPage.financialFreedom.shouldBe(visible));
-        LOG.info("Блок отображен");
-
-        LOG.info("Проверка указанной суммы на соответствие формату...");
-        $(overviewPage.financialFreedom.should(matchText("\\d{1,3}\\s\\d{3}\\s\\d{3}\\.\\d{2}\\s\\₽")));
-        LOG.info("Формату соответствует");
-
-        LOG.info("Наведение курсора на блок Финансовой свободы");
-        actions().moveToElement(overviewPage.financialFreedom).perform();
-
-        LOG.info("Проверка отображения \"Моих средств\"...");
-        SelenideElement myAssets = overviewPage.findElementByClassName("my-assets");
-        $(myAssets.shouldBe(visible));
-        LOG.info("Cтрока отображена");
-
-        LOG.info("Проверка указанной суммы на соответствие формату...");
-        $(myAssets.shouldHave(matchText("\\d{1,3}\\s\\d{3}\\s\\d{3}\\.\\d{2}\\s\\₽")));
-        LOG.info("Формату соответствует");
+        overviewPage
+                .finBlockCheck()
+                .amountFormatCheck()
+                .myAssetesCheck()
+                .myAssetsAmountFormatCheck();
     }
 }

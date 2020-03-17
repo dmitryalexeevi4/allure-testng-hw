@@ -8,7 +8,7 @@
             </run>
         </groups>
         <classes>
-            <class name="com.github.dmitryalexeevi4.TestClass"/>
+            <class name="com.github.dmitryalexeevi4.TestCase"/>
         </classes>
     </test>
 </suite>
