@@ -8,6 +8,7 @@ import io.qameta.allure.selenide.AllureSelenide;
 import static com.codeborne.selenide.Selenide.*;
 
 @Epic("idemo.bspb.ru")
+@Features(value = {@Feature(value = "Вход в систему"), @Feature(value = "Действия на странице")})
 @Owner("Бобылев Дмитрий")
 
 public class TestCase {
@@ -21,7 +22,7 @@ public class TestCase {
         open("https://idemo.bspb.ru");
     }
 
-    @Feature("Вход в систему")
+    @Feature(value = "Вход в систему")
     @Story("Проверка входа в систему")
     @Description("Здесь будет проверка въода в систему")
     @Test
@@ -34,8 +35,8 @@ public class TestCase {
         mainPage.userGreetingCheck();
     }
 
-    @Feature("Страница \"Обзор\"")
-    @Story("Действия на странице")
+    @Feature(value = "Действия на страницах")
+    @Story("Страница \"Overview\"")
     @Description("Здесь будут проверки на странице")
     @Test
     public void pageTest() {
